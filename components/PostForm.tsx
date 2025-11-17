@@ -16,7 +16,7 @@ export default function PostForm({ onSubmit }: PostFormProps) {
   const MAX_IMAGE_SIZE = 800; // Maximum width/height in pixels
   const IMAGE_QUALITY = 0.7; // JPEG compression quality (0-1)
 
-  // Compress and resize image
+  // Compress and resize image to square
   const compressImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -24,24 +24,11 @@ export default function PostForm({ onSubmit }: PostFormProps) {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
 
-          // Calculate new dimensions while maintaining aspect ratio
-          if (width > height) {
-            if (width > MAX_IMAGE_SIZE) {
-              height = (height * MAX_IMAGE_SIZE) / width;
-              width = MAX_IMAGE_SIZE;
-            }
-          } else {
-            if (height > MAX_IMAGE_SIZE) {
-              width = (width * MAX_IMAGE_SIZE) / height;
-              height = MAX_IMAGE_SIZE;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
+          // Make square canvas
+          const targetSize = MAX_IMAGE_SIZE;
+          canvas.width = targetSize;
+          canvas.height = targetSize;
 
           const ctx = canvas.getContext('2d');
           if (!ctx) {
@@ -49,7 +36,17 @@ export default function PostForm({ onSubmit }: PostFormProps) {
             return;
           }
 
-          ctx.drawImage(img, 0, 0, width, height);
+          // Calculate crop area (center square)
+          const sourceSize = Math.min(img.width, img.height);
+          const sourceX = (img.width - sourceSize) / 2;
+          const sourceY = (img.height - sourceSize) / 2;
+
+          // Draw cropped and resized square image
+          ctx.drawImage(
+            img,
+            sourceX, sourceY, sourceSize, sourceSize, // Source: center square
+            0, 0, targetSize, targetSize              // Destination: full canvas
+          );
 
           // Convert to JPEG with compression
           const compressedBase64 = canvas.toDataURL('image/jpeg', IMAGE_QUALITY);
