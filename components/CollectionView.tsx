@@ -13,13 +13,14 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
   const gridSize = level; // 2x2 for level 2, 3x3 for level 3, etc.
   const displayCount = gridSize * gridSize;
 
-  // Get most recent posts for the grid
-  const displayPosts = posts.slice(0, displayCount);
+  // Get oldest posts first for the grid (left-top = oldest)
+  const displayPosts = posts.slice(-displayCount).reverse();
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ko-KR', {
-      month: 'short',
+      year: 'numeric',
+      month: 'long',
       day: 'numeric'
     });
   };
@@ -34,7 +35,7 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
               모아보기 - Level {level}
             </h2>
             <p className="text-sm text-gray-600">
-              최근 {displayCount}개의 비움 기록
+              {displayCount}개의 비움 기록
             </p>
           </div>
           <button
@@ -65,15 +66,13 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
                   className="w-full h-full object-cover"
                 />
 
-                {/* Overlay with text */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-100 transition-opacity">
-                  <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <div className="text-white text-xs font-semibold mb-1">
-                      {formatDate(post.date)}
-                    </div>
-                    <div className="text-white text-sm line-clamp-2">
-                      {post.text}
-                    </div>
+                {/* Text labels with background */}
+                <div className="absolute bottom-0 left-0 right-0 p-2">
+                  <div className="inline-block bg-black/70 text-white text-xs font-semibold px-2 py-1 rounded mb-1">
+                    {formatDate(post.date)}
+                  </div>
+                  <div className="bg-black/70 text-white text-sm px-2 py-1 rounded line-clamp-2">
+                    {post.text}
                   </div>
                 </div>
               </div>
