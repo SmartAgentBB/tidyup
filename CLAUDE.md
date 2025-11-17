@@ -2,7 +2,7 @@
 
 **Last Updated:** 2025-11-17
 **Repository:** SmartAgentBB/tidyup
-**Status:** 🆕 New Repository - Initial Setup Phase
+**Status:** ✅ Active Development - Next.js Application
 
 ---
 
@@ -24,74 +24,71 @@
 ## Repository Overview
 
 ### Purpose
-The `tidyup` repository is currently in its initial setup phase. This document will evolve as the codebase develops.
+비움 챌린지 (Tidyup Challenge) - 연말을 맞아 불필요한 물건들을 비워내고 새로운 시작을 준비하는 웹 애플리케이션입니다.
 
-**Intended Use:** To be determined based on initial commits and project structure.
+**Intended Use:** 사용자가 사진과 짧은 텍스트로 비움의 순간을 기록하고 타임라인 형태로 확인할 수 있는 웹 서비스
 
 ### Key Information
 - **Remote:** `http://local_proxy@127.0.0.1:29744/git/SmartAgentBB/tidyup`
-- **Primary Branch:** TBD (will be set after first commit)
-- **License:** TBD
-- **Language/Framework:** TBD
+- **Primary Branch:** `main` (or `master`)
+- **License:** MIT
+- **Language/Framework:** Next.js 15 + TypeScript + Tailwind CSS
+- **Storage:** Browser LocalStorage (Base64 encoded images)
 
 ---
 
 ## Current State
 
-### Repository Status: EMPTY
-This repository is currently **empty** with:
-- ✗ No source code files
-- ✗ No configuration files
-- ✗ No documentation files
-- ✗ No commit history
-- ✓ Git initialized
-- ✓ Remote configured
+### Repository Status: ACTIVE
+This repository is **actively developed** with:
+- ✓ Next.js 15 with App Router
+- ✓ TypeScript configuration
+- ✓ Tailwind CSS for styling
+- ✓ ESLint for code quality
+- ✓ Complete application code
+- ✓ Documentation (README.md)
+- ✓ Git configured and ready
 
-### What Needs to Be Done
-When starting development on this repository, AI assistants should:
+### Project Features
+1. **Photo Upload**: Users can upload photos of items they've decluttered
+2. **Text Input**: 140-character limit for describing the decluttering action
+3. **Timeline View**: Posts displayed in reverse chronological order (newest first)
+4. **Local Storage**: All data stored in browser's localStorage (Base64 images)
+5. **Delete Functionality**: Users can remove individual posts
 
-1. **Determine Project Type**
-   - Ask the user what type of project this will be
-   - Identify the primary language/framework
-   - Understand the project goals
+### Development Setup
+To get started:
+```bash
+# Install dependencies
+npm install
 
-2. **Create Essential Files**
-   - README.md - Project description and getting started guide
-   - .gitignore - Appropriate for the chosen language/framework
-   - LICENSE - Project license (if applicable)
-   - Configuration files for the chosen tech stack
+# Run development server
+npm run dev
 
-3. **Set Up Development Environment**
-   - Package manager configuration (package.json, requirements.txt, go.mod, etc.)
-   - Linting/formatting tools (.eslintrc, .prettierrc, pyproject.toml, etc.)
-   - Editor configuration (.editorconfig)
+# Build for production
+npm run build
 
-4. **Establish Structure**
-   - Create appropriate directory structure
-   - Set up initial project scaffolding
-   - Add basic documentation
-
-5. **Update This Document**
-   - Fill in the sections below with actual project information
-   - Document the architecture and patterns used
-   - Keep conventions and workflows current
+# Run production server
+npm start
+```
 
 ---
 
 ## Development Workflow
 
 ### Branch Strategy
-**Status:** To be established
+**Status:** ✅ Established
 
-**Recommended Workflow:**
+**Current Workflow:**
 ```
-main/master          → Production-ready code
-develop              → Integration branch for features
+main                 → Production-ready code
 feature/*            → New features
 bugfix/*             → Bug fixes
 hotfix/*             → Critical production fixes
 claude/*             → AI assistant work branches
 ```
+
+**Note:** Currently using `claude/*` branches for development. Merge to main when features are complete and tested.
 
 ### Git Workflow
 
@@ -149,58 +146,90 @@ git commit -m "docs: update API documentation for v2 endpoints"
 ## Codebase Structure
 
 ### Directory Layout
-**Status:** Not yet established
+**Status:** ✅ Established
 
-**Recommended Structure (update when project type is determined):**
+**Current Structure:**
 
 ```
 tidyup/
-├── src/              # Source code (or lib/, pkg/, etc.)
-├── tests/            # Test files
-├── docs/             # Documentation
-├── config/           # Configuration files
-├── scripts/          # Build/utility scripts
-├── .github/          # GitHub workflows and templates
-├── CLAUDE.md         # This file
-├── README.md         # Project overview
-├── LICENSE           # License file
-└── .gitignore        # Git ignore patterns
+├── app/                    # Next.js App Router
+│   ├── page.tsx           # Main page (home route)
+│   ├── layout.tsx         # Root layout with metadata
+│   └── globals.css        # Global styles with Tailwind
+├── components/            # React components
+│   ├── PostForm.tsx      # Form for creating posts (photo + text)
+│   └── PostList.tsx      # Timeline view of all posts
+├── lib/                   # Utility libraries
+│   └── storage.ts        # LocalStorage helper functions
+├── public/                # Static assets
+├── node_modules/          # npm dependencies
+├── .next/                 # Next.js build output
+├── CLAUDE.md             # This file
+├── README.md             # Project documentation
+├── package.json          # npm configuration
+├── tsconfig.json         # TypeScript configuration
+├── tailwind.config.ts    # Tailwind CSS configuration
+├── postcss.config.mjs    # PostCSS configuration
+├── next.config.ts        # Next.js configuration
+├── .eslintrc.json        # ESLint configuration
+└── .gitignore            # Git ignore patterns
 ```
 
 ### Module Organization
-**Status:** To be documented when modules are created
+**Status:** ✅ Documented
 
-When the project structure is established, document:
-- How modules/packages are organized
-- Import/dependency patterns
-- Core vs. utility code separation
-- Third-party dependencies
+**Component Structure:**
+- `app/page.tsx` - Main page component, orchestrates PostForm and PostList
+- `components/PostForm.tsx` - Handles image upload, text input, and form submission
+- `components/PostList.tsx` - Displays posts in timeline format with delete functionality
+- `lib/storage.ts` - Encapsulates all localStorage operations
+
+**Import Patterns:**
+- Use `@/` alias for imports from root directory
+- Example: `import { storage } from '@/lib/storage'`
+- All components are React Client Components (using `"use client"`)
+
+**Key Dependencies:**
+- `next` (^15.0.0) - React framework
+- `react` (^19.0.0) - UI library
+- `react-dom` (^19.0.0) - React DOM renderer
+- `typescript` (^5) - Type safety
+- `tailwindcss` (^3.4.17) - Utility-first CSS
+- `eslint` - Code linting
 
 ---
 
 ## Key Conventions
 
 ### Code Style
-**Status:** To be established
+**Status:** ✅ Established
 
-Document code style conventions here once determined:
-- Naming conventions (camelCase, snake_case, PascalCase)
-- Indentation (spaces vs. tabs, width)
-- Line length limits
-- Comment style and documentation
-- File organization patterns
+**Current Conventions:**
+- **Naming**: camelCase for variables/functions, PascalCase for components/types
+- **Indentation**: 2 spaces (enforced by ESLint)
+- **Quotes**: Single quotes for strings (except JSX attributes use double quotes)
+- **Semicolons**: Optional (but consistent within files)
+- **Line length**: ~80-100 characters (soft limit)
+- **Comment style**: JSDoc-style for functions, inline comments for complex logic
 
 ### Naming Conventions
-**Status:** To be established
+**Status:** ✅ Established
 
 **Files:**
-- TBD based on project type
+- React components: `PascalCase.tsx` (e.g., `PostForm.tsx`)
+- Utility files: `camelCase.ts` (e.g., `storage.ts`)
+- Config files: `kebab-case` or specific format (e.g., `next.config.ts`)
 
 **Variables/Functions:**
-- TBD based on project language
+- Variables: `camelCase` (e.g., `postList`, `imageData`)
+- Functions: `camelCase` (e.g., `handleSubmit`, `formatDate`)
+- Constants: `UPPER_SNAKE_CASE` (e.g., `MAX_TEXT_LENGTH`, `STORAGE_KEY`)
+- React hooks: prefix with `use` (e.g., `useState`, `useEffect`)
 
-**Classes/Types:**
-- TBD based on project language
+**Components/Types:**
+- React Components: `PascalCase` (e.g., `PostForm`, `PostList`)
+- TypeScript Interfaces: `PascalCase` (e.g., `Post`, `PostFormProps`)
+- TypeScript Types: `PascalCase` (e.g., `Metadata`)
 
 ### Documentation Standards
 
@@ -311,38 +340,31 @@ Before committing code, verify:
 
 ### Setting Up the Project (First Time)
 
-**Status:** This repository is empty - initial setup needed
+**Status:** ✅ Complete
 
-When initializing this project:
+For new contributors:
 
-1. **Determine Project Type**
+1. **Clone and Install**
    ```bash
-   # Example for Node.js/TypeScript
-   npm init -y
-   npm install typescript --save-dev
-   npx tsc --init
+   # Clone the repository
+   git clone http://local_proxy@127.0.0.1:29744/git/SmartAgentBB/tidyup
+   cd tidyup
 
-   # Example for Python
-   python -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-
-   # Example for Go
-   go mod init github.com/SmartAgentBB/tidyup
+   # Install dependencies
+   npm install
    ```
 
-2. **Create Essential Files**
-   - .gitignore
-   - README.md
-   - Configuration files
-   - Directory structure
-
-3. **First Commit**
+2. **Run Development Server**
    ```bash
-   git add .
-   git commit -m "chore: initial project setup"
-   git push -u origin main
+   npm run dev
    ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser
+
+3. **Verify Everything Works**
+   - Upload a test photo
+   - Add test text (max 140 characters)
+   - Save and verify it appears in the timeline
+   - Delete the test post
 
 ### Adding a New Feature
 
@@ -398,12 +420,20 @@ Document testing approach when implemented:
 ```
 
 ### Linting and Formatting
-**Status:** To be established
+**Status:** ✅ Configured
 
 ```bash
-# Commands will be documented once linting is set up
-# Example: npm run lint, black ., gofmt, etc.
+# Run ESLint
+npm run lint
+
+# Build project (also checks for type errors)
+npm run build
 ```
+
+**Configuration:**
+- ESLint with Next.js recommended rules
+- TypeScript strict mode enabled
+- Tailwind CSS class sorting (via PostCSS)
 
 ### CI/CD
 **Status:** Not configured
@@ -419,29 +449,51 @@ Document CI/CD pipeline when established:
 ## Deployment
 
 ### Build Process
-**Status:** To be established
+**Status:** ✅ Configured
 
-Document build commands and processes:
 ```bash
-# Build commands will be documented here
+# Development build (with hot reload)
+npm run dev
+
+# Production build
+npm run build
+
+# Start production server (after build)
+npm start
 ```
 
-### Deployment Steps
-**Status:** To be established
+**Build Output:** `.next/` directory (git-ignored)
 
-Document deployment procedures:
-1. Pre-deployment checklist
-2. Deployment commands
-3. Post-deployment verification
-4. Rollback procedures
+### Deployment Steps
+**Status:** ✅ Ready for Deployment
+
+**Recommended Platform:** Vercel (seamless Next.js integration)
+
+**Deployment Steps:**
+1. Push code to repository
+2. Connect repository to Vercel
+3. Configure build settings (auto-detected for Next.js)
+4. Deploy
+
+**Alternative Platforms:**
+- Netlify
+- Cloudflare Pages
+- Self-hosted (using `npm run build && npm start`)
 
 ### Environment Configuration
-**Status:** To be established
+**Status:** ✅ No environment variables needed
 
-Document environment variables and configuration:
-- Development environment
-- Staging environment
-- Production environment
+**Current Setup:**
+- No backend API required
+- No database connection
+- No authentication service
+- All data stored in browser localStorage
+
+**Future Enhancements:**
+When upgrading to cloud storage (Vercel Blob, Supabase, etc.), add:
+- `BLOB_READ_WRITE_TOKEN` (for Vercel Blob)
+- `NEXT_PUBLIC_SUPABASE_URL` (for Supabase)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` (for Supabase)
 
 ---
 
@@ -480,10 +532,45 @@ git commit
 ```
 
 #### Build Issues
-**Status:** To be documented when build process is established
+
+**TypeScript errors:**
+```bash
+# Check for type errors
+npx tsc --noEmit
+```
+
+**Module not found:**
+```bash
+# Reinstall dependencies
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**Port already in use:**
+```bash
+# Kill process on port 3000
+lsof -ti:3000 | xargs kill -9
+
+# Or use a different port
+PORT=3001 npm run dev
+```
 
 #### Runtime Issues
-**Status:** To be documented when application is developed
+
+**LocalStorage quota exceeded:**
+- Error: "저장 공간이 부족합니다"
+- Solution: Delete old posts or clear browser data
+- Browser limit: ~5-10MB for localStorage
+
+**Images not displaying:**
+- Check browser console for Base64 encoding errors
+- Verify image file size < 5MB
+- Ensure file type is valid image format
+
+**Data lost after browser cache clear:**
+- LocalStorage is cleared with browser cache
+- Remind users to export/backup important data
+- Consider upgrading to cloud storage for persistence
 
 ### Getting Help
 
@@ -499,14 +586,21 @@ When stuck:
 ## Notes for Future Updates
 
 This document should be updated when:
-- [ ] Project type and language are determined
-- [ ] Directory structure is established
-- [ ] Coding conventions are defined
-- [ ] Testing framework is set up
-- [ ] CI/CD is configured
-- [ ] Deployment process is established
-- [ ] New patterns or conventions are introduced
-- [ ] Major architectural decisions are made
+- [x] Project type and language are determined (Next.js + TypeScript)
+- [x] Directory structure is established
+- [x] Coding conventions are defined
+- [ ] Testing framework is set up (future enhancement)
+- [ ] CI/CD is configured (future enhancement)
+- [x] Deployment process is established (Vercel recommended)
+- [x] New patterns or conventions are introduced
+- [x] Major architectural decisions are made (LocalStorage approach)
+
+**Future Updates Needed When:**
+- Migrating from LocalStorage to cloud storage
+- Adding user authentication
+- Implementing tests
+- Setting up CI/CD pipeline
+- Adding new features (search, tags, categories, etc.)
 
 ### Maintenance
 - Review and update quarterly or after major changes
@@ -545,16 +639,53 @@ git diff --staged
 ```
 
 ### File Locations
-**Status:** To be documented as project structure develops
+- **Main page**: `app/page.tsx:1`
+- **Post form**: `components/PostForm.tsx:1`
+- **Post list**: `components/PostList.tsx:1`
+- **Storage utils**: `lib/storage.ts:1`
+- **Global styles**: `app/globals.css:1`
+- **Config files**: Root directory
 
 ### Key Dependencies
-**Status:** To be documented when dependencies are added
+- Next.js: ^15.0.0 (React framework with App Router)
+- React: ^19.0.0 (UI library)
+- TypeScript: ^5 (Type safety)
+- Tailwind CSS: ^3.4.17 (Styling)
+- ESLint: ^8 (Code quality)
 
 ### Important Links
 - Repository: http://local_proxy@127.0.0.1:29744/git/SmartAgentBB/tidyup
-- Documentation: TBD
-- Issue Tracker: TBD
-- CI/CD Dashboard: TBD
+- Documentation: See README.md
+- v0.app: https://v0.app (for design iterations)
+- Next.js Docs: https://nextjs.org/docs
+- Tailwind CSS: https://tailwindcss.com/docs
+
+### Architecture Decisions
+
+**Why LocalStorage?**
+- Zero backend setup required
+- Instant availability
+- No API calls or authentication needed
+- Perfect for v0.app prototyping
+- Easy migration path to cloud storage later
+
+**Why Base64 Images?**
+- Simple storage alongside text data
+- No separate file management needed
+- Works entirely in browser
+- Trade-off: Storage space limitations
+
+**Why 140 Character Limit?**
+- Encourages concise, meaningful reflections
+- Twitter-like constraint promotes clarity
+- Reduces storage space usage
+- Better mobile UX with shorter texts
+
+**Future Migration Path:**
+1. Add cloud storage (Vercel Blob/Supabase)
+2. Implement user authentication
+3. Add data export/import functionality
+4. Consider progressive web app (PWA) features
 
 ---
 
