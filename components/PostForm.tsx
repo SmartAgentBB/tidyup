@@ -13,8 +13,57 @@ export default function PostForm({ onSubmit }: PostFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const MAX_TEXT_LENGTH = 140;
+  const MAX_IMAGE_SIZE = 800; // Maximum width/height in pixels
+  const IMAGE_QUALITY = 0.7; // JPEG compression quality (0-1)
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  // Compress and resize image
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // Calculate new dimensions while maintaining aspect ratio
+          if (width > height) {
+            if (width > MAX_IMAGE_SIZE) {
+              height = (height * MAX_IMAGE_SIZE) / width;
+              width = MAX_IMAGE_SIZE;
+            }
+          } else {
+            if (height > MAX_IMAGE_SIZE) {
+              width = (width * MAX_IMAGE_SIZE) / height;
+              height = MAX_IMAGE_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            reject(new Error('Canvas context not available'));
+            return;
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Convert to JPEG with compression
+          const compressedBase64 = canvas.toDataURL('image/jpeg', IMAGE_QUALITY);
+          resolve(compressedBase64);
+        };
+        img.onerror = () => reject(new Error('이미지 로드 실패'));
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error('파일 읽기 실패'));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -24,20 +73,21 @@ export default function PostForm({ onSubmit }: PostFormProps) {
       return;
     }
 
-    // Validate file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('이미지 크기는 5MB 이하여야 합니다.');
+    // Validate file size (10MB limit before compression)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('이미지 크기는 10MB 이하여야 합니다.');
       return;
     }
 
-    // Convert to base64
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
-      setImage(base64);
-      setPreview(base64);
-    };
-    reader.readAsDataURL(file);
+    try {
+      // Compress and resize image
+      const compressedBase64 = await compressImage(file);
+      setImage(compressedBase64);
+      setPreview(compressedBase64);
+    } catch (error) {
+      console.error('Image compression error:', error);
+      alert('이미지 처리 중 오류가 발생했습니다.');
+    }
   };
 
   const handleSubmit = (e: FormEvent) => {
