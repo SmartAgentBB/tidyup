@@ -27,7 +27,7 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
+      <div className="bg-white rounded-lg w-auto max-h-[90vh] overflow-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
           <div>
@@ -46,12 +46,14 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
           </button>
         </div>
 
-        {/* Grid Layout */}
-        <div className="p-4">
+        {/* Grid Layout - Fixed 900x900px */}
+        <div className="p-4 flex justify-center">
           <div
-            className="grid gap-2"
+            className="grid gap-1"
             style={{
               gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+              width: '900px',
+              height: '900px',
             }}
           >
             {displayPosts.map((post) => (
@@ -68,10 +70,10 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
 
                 {/* Text labels with background */}
                 <div className="absolute bottom-0 left-0 right-0 p-2">
-                  <div className="inline-block bg-black/70 text-white text-xs font-semibold px-2 py-1 rounded mb-1">
+                  <div className="inline-block bg-black/50 text-white text-xs font-semibold px-2 py-1 rounded mb-1">
                     {formatDate(post.date)}
                   </div>
-                  <div className="bg-black/70 text-white text-sm px-2 py-1 rounded line-clamp-2">
+                  <div className="bg-black/50 text-white text-sm px-2 py-1 rounded line-clamp-2">
                     {post.text}
                   </div>
                 </div>
