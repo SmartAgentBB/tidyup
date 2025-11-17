@@ -13,6 +13,7 @@ interface CollectionViewProps {
 export default function CollectionView({ posts, onClose }: CollectionViewProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [viewMode, setViewMode] = useState<'details' | 'complete'>('details');
 
   const level = calculateLevel(posts.length);
   const gridSize = level; // 2x2 for level 2, 3x3 for level 3, etc.
@@ -68,28 +69,54 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg w-auto max-h-[90vh] overflow-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800">
-              모아보기 - Level {level}
-            </h2>
-            <p className="text-sm text-gray-600">
-              {displayCount}개의 비움 기록
-            </p>
+        <div className="sticky top-0 bg-white border-b border-gray-200 p-4">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800">
+                모아보기 - Level {level}
+              </h2>
+              <p className="text-sm text-gray-600">
+                {displayCount}개의 비움 기록
+              </p>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+            >
+              ✕
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-          >
-            ✕
-          </button>
+
+          {/* View Mode Toggle */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode('details')}
+              className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-colors ${
+                viewMode === 'details'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              날짜와 기록
+            </button>
+            <button
+              onClick={() => setViewMode('complete')}
+              className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-colors ${
+                viewMode === 'complete'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              Complete
+            </button>
+          </div>
         </div>
 
         {/* Grid Layout - Fixed 900x900px */}
         <div className="p-4 flex justify-center">
           <div
             ref={gridRef}
-            className="grid gap-1"
+            className="grid gap-1 relative"
             style={{
               gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
               width: '900px',
@@ -108,15 +135,17 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
                   className="w-full h-full object-cover"
                 />
 
-                {/* Text labels with background */}
-                <div className="absolute bottom-0 left-0 right-0 p-2">
-                  <div className="inline-block bg-black/50 text-white text-xs font-semibold px-2 py-1 rounded mb-1">
-                    {formatDate(post.date)}
+                {/* Text labels with background - only in details mode */}
+                {viewMode === 'details' && (
+                  <div className="absolute bottom-0 left-0 right-0 p-2">
+                    <div className="inline-block bg-black/50 text-white text-xs font-semibold px-2 py-1 rounded mb-1">
+                      {formatDate(post.date)}
+                    </div>
+                    <div className="bg-black/50 text-white text-sm px-2 py-1 rounded line-clamp-2">
+                      {post.text}
+                    </div>
                   </div>
-                  <div className="bg-black/50 text-white text-sm px-2 py-1 rounded line-clamp-2">
-                    {post.text}
-                  </div>
-                </div>
+                )}
               </div>
             ))}
 
@@ -129,6 +158,15 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
                 <span className="text-gray-400 text-sm">준비 중</span>
               </div>
             ))}
+
+            {/* Complete Mode Overlay */}
+            {viewMode === 'complete' && (
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/40 via-purple-500/40 to-pink-500/40 flex items-center justify-center rounded-lg">
+                <h1 className="text-white text-6xl font-bold drop-shadow-lg">
+                  Level {level} Complete
+                </h1>
+              </div>
+            )}
           </div>
         </div>
 
