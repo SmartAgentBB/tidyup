@@ -40,11 +40,11 @@ export default function PostList({ posts, onDelete }: PostListProps) {
           className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200"
         >
           {/* Image */}
-          <div className="relative">
+          <div className="relative w-full aspect-square bg-gray-100">
             <img
               src={post.image}
               alt="비움 기록"
-              className="w-full h-auto max-h-96 object-cover"
+              className="w-full h-full object-cover"
             />
           </div>
 
