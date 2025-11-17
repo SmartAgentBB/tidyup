@@ -161,7 +161,7 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
 
             {/* Complete Mode Overlay */}
             {viewMode === 'complete' && (
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/40 via-purple-500/40 to-pink-500/40 flex items-center justify-center rounded-lg">
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-700/40 via-orange-800/40 to-yellow-900/40 flex items-center justify-center rounded-lg">
                 <h1 className="text-white text-6xl font-bold drop-shadow-lg">
                   Level {level} Complete
                 </h1>
