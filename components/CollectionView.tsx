@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef, useState } from 'react';
+import html2canvas from 'html2canvas';
 import { Post } from '@/lib/storage';
 import { calculateLevel } from '@/lib/level';
 
@@ -9,6 +11,9 @@ interface CollectionViewProps {
 }
 
 export default function CollectionView({ posts, onClose }: CollectionViewProps) {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+
   const level = calculateLevel(posts.length);
   const gridSize = level; // 2x2 for level 2, 3x3 for level 3, etc.
   const displayCount = gridSize * gridSize;
@@ -23,6 +28,40 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const handleExportImage = async () => {
+    if (!gridRef.current) return;
+
+    setIsExporting(true);
+    try {
+      const canvas = await html2canvas(gridRef.current, {
+        width: 900,
+        height: 900,
+        scale: 2, // Higher quality
+        backgroundColor: '#ffffff',
+        logging: false,
+        useCORS: true,
+      });
+
+      // Convert to blob and download
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const today = new Date().toISOString().split('T')[0];
+        link.download = `비움챌린지-레벨${level}-${today}.png`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+      });
+    } catch (error) {
+      console.error('이미지 저장 실패:', error);
+      alert('이미지 저장에 실패했습니다.');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -49,6 +88,7 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
         {/* Grid Layout - Fixed 900x900px */}
         <div className="p-4 flex justify-center">
           <div
+            ref={gridRef}
             className="grid gap-1"
             style={{
               gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
@@ -94,12 +134,21 @@ export default function CollectionView({ posts, onClose }: CollectionViewProps) 
 
         {/* Footer */}
         <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-4">
-          <button
-            onClick={onClose}
-            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-          >
-            닫기
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={handleExportImage}
+              disabled={isExporting}
+              className="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              {isExporting ? '저장 중...' : '💾 저장'}
+            </button>
+            <button
+              onClick={onClose}
+              className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              닫기
+            </button>
+          </div>
         </div>
       </div>
     </div>
